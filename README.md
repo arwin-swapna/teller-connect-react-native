@@ -2,6 +2,8 @@
 
 This repository provides a workaround for integrating Teller Connect into React Native applications. While a package (`teller-connect-react`) exists for web, it didn't work for React Native in my case. This repo uses a WebView-based approach to display the Teller Connect interface.
 
+![example](https://github.com/user-attachments/assets/c87496e7-e794-4cc7-8656-46f2d29a62e2)
+
 ## How It Works
 
 - The Teller Connect script is embedded in a custom HTML file (`teller-connect.html`).
