@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=no"
+    />
+    <style>
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.9
+        ); 
+        z-index: 1000; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(0, 0, 0, 0.1); 
+        border-top: 5px solid #333; 
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div id="loading-screen">
+      <div class="spinner"></div>
+    </div>
+
+    <script src="https://cdn.teller.io/connect/connect.js"></script>
+    <script>
+      let tellerConnectInstance;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        tellerConnectInstance = TellerConnect.setup({
+          applicationId: "YOUR_APPLICATION_ID",
+          environment: "sandbox",
+          products: ["verify", "transactions"],
+          appearance: "dark",
+          onInit: function () {
+            // Remove the loading screen
+            const loadingScreen = document.getElementById("loading-screen");
+            if (loadingScreen) {
+              loadingScreen.style.display = "none";
+            }
+            openTellerConnect();
+          },
+          onSuccess: function (enrollment) {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({ type: "success", data: enrollment })
+            );
+          },
+          onExit: function () {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({
+                type: "exit",
+                message: "User closed Teller Connect",
+              })
+            );
+          },
+          onFailure: function (error) {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({ type: "failure", error: error.message })
+            );
+          },
+        });
+      });
+
+      function openTellerConnect() {
+        if (tellerConnectInstance) {
+          tellerConnectInstance.open();
+        }
+      }
+    </script>
+  </body>
+</html>
